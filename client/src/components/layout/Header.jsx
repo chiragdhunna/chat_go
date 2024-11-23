@@ -6,7 +6,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { orange } from "../../constants/color";
 import {
   Menu as MenuIcon,
@@ -14,25 +14,38 @@ import {
   Add as AddIcon,
   Group as GroupIcon,
   Logout as LogoutIcon,
+  Notifications as NotificationsIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+const SearchDialog = lazy(() => import("../specific/Search"));
+const NotificationDialog = lazy(() => import("../specific/Notifications"));
+const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 
 function Header() {
   const navigateToGroup = () => useNavigate("/groups");
 
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
+  const [isNewGroup, setIsNewGroup] = useState(false);
+  const [isNotification, setIsNotification] = useState(false);
+
   const handleMobile = () => {
-    console.log("handleMobile");
+    setIsMobile((prev) => !prev);
   };
 
-  const openSearchDialog = () => {
-    console.log("openSearchDialog");
+  const openSearch = () => {
+    setIsSearch((prev) => !prev);
   };
 
   const openNewGroup = () => {
-    console.log("openNewGroup");
+    setIsNewGroup((prev) => !prev);
   };
   const logoutHandler = () => {
     console.log("logoutHandler");
+  };
+
+  const openNotification = () => {
+    setIsNotification((prev) => !prev);
   };
 
   return (
@@ -71,7 +84,7 @@ function Header() {
               <IconBtn
                 title={"Search"}
                 icon={<SearchIcon />}
-                onClick={openSearchDialog}
+                onClick={openSearch}
               />
               <IconBtn
                 title={"New Group"}
@@ -84,6 +97,11 @@ function Header() {
                 onClick={navigateToGroup}
               />
               <IconBtn
+                title={"Manage Group"}
+                icon={<NotificationsIcon />}
+                onClick={openNotification}
+              />
+              <IconBtn
                 title={"Logout"}
                 icon={<LogoutIcon />}
                 onClick={logoutHandler}
@@ -92,6 +110,21 @@ function Header() {
           </Toolbar>
         </AppBar>
       </Box>
+      {isSearch && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <SearchDialog />
+        </Suspense>
+      )}
+      {isNotification && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <NotificationDialog />
+        </Suspense>
+      )}
+      {isNewGroup && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <NewGroupDialog />
+        </Suspense>
+      )}
     </>
   );
 }
