@@ -23,7 +23,11 @@ const NotificationDialog = lazy(() => import("../specific/Notifications"));
 const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 
 function Header() {
-  const navigateToGroup = () => useNavigate("/groups");
+  const navigate = useNavigate();
+
+  const navigateToGroup = () => {
+    navigate("/groups");
+  };
 
   const [isMobile, setIsMobile] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
@@ -98,7 +102,7 @@ function Header() {
                 onClick={navigateToGroup}
               />
               <IconBtn
-                title={"Manage Group"}
+                title={"Notifications"}
                 icon={<NotificationsIcon />}
                 onClick={openNotification}
               />
