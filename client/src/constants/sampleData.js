@@ -65,3 +65,50 @@ export const sampleNotifications = [
     _id: "2",
   },
 ];
+
+export const sampleMessages = [
+  {
+    attachments: [
+      // {
+      //   public_id: "asdsad",
+      //   url: "https://www.w3schools.com/howto/img_avatar.png",
+      // },
+    ],
+    content: "L*uda ka Message hai",
+    _id: "sfnsdjkfsdnfkjsbnd",
+    sender: {
+      _id: "user_id",
+      name: "Chaman",
+    },
+    chat: "chatId",
+    createdAt: "2024-02-12T10:41:30.630Z",
+  },
+  {
+    attachments: [
+      {
+        public_id: "xyz123",
+        url: "https://www.w3schools.com/howto/img_avatar.png",
+      },
+    ],
+    // content: "Hello! This is another sample message.",
+    _id: "abc12345",
+    sender: {
+      // _id: "user_2",
+      _id: "123",
+      name: "Rahul",
+    },
+    chat: "chatId",
+    createdAt: "2024-02-12T11:00:00.000Z",
+  },
+  {
+    attachments: [],
+    content: "No attachments here, just text!",
+    _id: "xyz789",
+    sender: {
+      _id: "user_3",
+      name: "Priya",
+    },
+    chat: "chatId",
+    createdAt: "2024-02-12T11:15:45.000Z",
+  },
+];
