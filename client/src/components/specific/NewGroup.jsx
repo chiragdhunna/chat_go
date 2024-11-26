@@ -13,6 +13,9 @@ import UserItem from "../shared/UserItem";
 import { useInputValidation } from "6pp";
 
 function NewGroup() {
+  const [members, setMembers] = useState(sampleUsers);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+
   const selectMemberHandler = (id) => {
     setSelectedMembers((prev) =>
       prev.includes(id)
@@ -26,9 +29,6 @@ function NewGroup() {
   const submitHandler = () => {};
 
   const closeHandler = () => {};
-
-  const [members, setMembers] = useState(sampleUsers);
-  const [selectedMembers, setSelectedMembers] = useState([]);
 
   const groupName = useInputValidation("");
 
