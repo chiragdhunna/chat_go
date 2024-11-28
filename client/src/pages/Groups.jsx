@@ -19,7 +19,7 @@ import {
   KeyboardBackspace as KeyboardBackspaceIcon,
   Menu as MenuIcon,
 } from "@mui/icons-material";
-import { bgGradient, mattBack } from "../constants/color";
+import { bgGradient, mattBlack } from "../constants/color";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
@@ -121,7 +121,7 @@ function Groups() {
             position: "absolute",
             top: "2rem",
             left: "2rem",
-            bgcolor: mattBack,
+            bgcolor: mattBlack,
             color: "white",
             ":hover": {
               bgcolor: "rgba(0,0,0,0.7)",
