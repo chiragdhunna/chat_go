@@ -1,12 +1,8 @@
 {
   "rewrites": [
-    { "source": "/admin", "destination": "/admin" },
-    { "source": "/admin/dashboard", "destination": "/admin" },
-    { "source": "/admin/users", "destination": "/admin" },
-    { "source": "/admin/chats", "destination": "/admin" },
-    { "source": "/admin/messages", "destination": "/admin" },
-    { "source": "/login", "destination": "/login" },
-    { "source": "/chat/:chatId", "destination": "/chat/:chatId" },
-    { "source": "/", "destination": "/" }
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
   ]
 }
