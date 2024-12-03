@@ -221,7 +221,7 @@ export const sampleMessages = [
       //   url: "https://www.w3schools.com/howto/img_avatar.png",
       // },
     ],
-    content: "L*uda ka Message hai",
+    content: "How you Doing?",
     _id: "sfnsdjkfsdnfkjsbnd",
     sender: {
       _id: "user_id",
@@ -282,7 +282,7 @@ export const dashboardData = {
 
   chats: [
     {
-      name: "LabadBass Group",
+      name: "Manali Trip Group",
       avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
       _id: "1",
       groupChat: false,
@@ -298,7 +298,7 @@ export const dashboardData = {
       },
     },
     {
-      name: "L*Da Luston Group",
+      name: "Friends Forever",
       avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
       _id: "2",
       groupChat: true,
@@ -318,7 +318,7 @@ export const dashboardData = {
   messages: [
     {
       attachments: [],
-      content: "L*uda ka Message hai",
+      content: "How you Doing?",
       _id: "sfnsdjkfsdnfkjsbnd",
       sender: {
         avatar: "https://www.w3schools.com/howto/img_avatar.png",
