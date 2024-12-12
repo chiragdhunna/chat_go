@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useFileHandler, useInputValidation } from "6pp";
+import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -9,11 +10,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
+import axios from "axios";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
-import { useFileHandler, useInputValidation } from "6pp";
-import { usernameValidator } from "../utils/validator";
 import { bgGradient } from "../constants/color";
+import { server } from "../constants/config";
+import { userExists } from "../redux/reducers/auth";
+import { usernameValidator } from "../utils/validator";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -27,8 +32,32 @@ const Login = () => {
 
   const avatar = useFileHandler("single");
 
-  const handleLogIn = (e) => {
+  const dispatch = useDispatch();
+
+  const handleLogIn = async (e) => {
+    console.log("handleLogIn");
     e.preventDefault();
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          username: username.value,
+          password: password.value,
+        },
+        config
+      );
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
   };
 
   const handleSignUp = (e) => {
@@ -68,7 +97,7 @@ const Login = () => {
                   width: "100%",
                   marginTop: "1rem",
                 }}
-                onSubmit={handleLogIn}
+                // onSubmit={handleLogIn}
               >
                 <TextField
                   required
@@ -102,6 +131,7 @@ const Login = () => {
                   sx={{
                     marginTop: "1rem",
                   }}
+                  onClick={handleLogIn}
                 >
                   Login
                 </Button>
