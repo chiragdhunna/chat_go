@@ -35,8 +35,8 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleLogIn = async (e) => {
-    console.log("handleLogIn");
     e.preventDefault();
+    console.log("Hi");
 
     const config = {
       withCredentials: true,
@@ -60,8 +60,35 @@ const Login = () => {
     }
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("avatar", avatar.file);
+    formData.append("name", name.value);
+    formData.append("bio", bio.value);
+    formData.append("username", username.value);
+    formData.append("password", password.value);
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/new`,
+        formData,
+        config
+      );
+
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went Wrong");
+    }
   };
 
   return (
@@ -97,7 +124,7 @@ const Login = () => {
                   width: "100%",
                   marginTop: "1rem",
                 }}
-                // onSubmit={handleLogIn}
+                onSubmit={handleLogIn}
               >
                 <TextField
                   required
@@ -131,7 +158,9 @@ const Login = () => {
                   sx={{
                     marginTop: "1rem",
                   }}
-                  onClick={handleLogIn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
                 >
                   Login
                 </Button>
@@ -146,6 +175,7 @@ const Login = () => {
           ) : (
             <>
               <Typography variant="h5">Sign Up</Typography>
+
               <form
                 style={{
                   width: "100%",
@@ -175,6 +205,9 @@ const Login = () => {
                       },
                     }}
                     component="label"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                   >
                     <>
                       <CameraAltIcon />
@@ -252,6 +285,9 @@ const Login = () => {
                   fullWidth
                   sx={{
                     marginTop: "1rem",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
                   }}
                 >
                   Sign Up
