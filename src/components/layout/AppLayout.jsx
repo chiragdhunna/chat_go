@@ -10,6 +10,7 @@ import { useMyChatsQuery } from "../../redux/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducers/misc";
 import toast from "react-hot-toast";
+import { useErrors } from "../hooks/hook";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -20,13 +21,8 @@ const AppLayout = () => (WrappedComponent) => {
     const { isMobile } = useSelector((state) => state.misc);
 
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
-    console.log(data);
 
-    useEffect(() => {
-      if (isError) {
-        toast.error(error?.data?.message || "Something went Wrong");
-      }
-    }, [isError, error]);
+    useErrors([{ isError, error }]);
 
     const handleDeleteChat = (e, _id, groupChat) => {
       e.preventDefault();
