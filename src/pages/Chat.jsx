@@ -1,6 +1,12 @@
-import React, { Fragment, useRef } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import AppLayout from "../components/layout/AppLayout";
-import { IconButton, Stack } from "@mui/material";
+import { IconButton, Skeleton, Stack } from "@mui/material";
 import { grayColor, orange } from "../constants/color";
 import {
   AttachFile as AttachFileIcon,
@@ -11,16 +17,53 @@ import { InputBox } from "../components/styles/StyledComponents";
 import FileMenu from "../components/dialogs/FileMenu";
 import { sampleMessages } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
+import { getSocket } from "../socket";
+import { NEW_MESSAGE } from "../constants/events";
+import { useChatDetailsQuery } from "../redux/api/api";
+import { useErrors, useSocketEvents } from "../components/hooks/hook";
 
-function Chat() {
+const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
-  const user = {
-    // _id: `${Math.random() * 1000}`,
-    _id: "123",
-    name: "Thorfinn",
+
+  const socket = getSocket();
+
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+
+  const [message, setMessage] = useState("");
+
+  const [messages, setMessages] = useState([]);
+
+  const errors = [{ isError: chatDetails.isError, error: chatDetails.error }];
+
+  console.log(messages);
+
+  const members = chatDetails.data?.chat?.members;
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+
+    if (!message.trim()) return;
+
+    socket.emit(NEW_MESSAGE, { chatId, members, message });
+    setMessage("");
   };
 
-  return (
+  console.log("user details", user);
+
+  const newMessagesHandler = useCallback((data) => {
+    // console.log("Listened Data", data);
+    setMessages((prev) => [...prev, data.message]);
+  }, []);
+
+  const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
+
+  useSocketEvents(socket, eventHandler);
+
+  useErrors(errors);
+
+  return chatDetails.isLoading ? (
+    <Skeleton />
+  ) : (
     <Fragment>
       <Stack
         ref={containerRef}
@@ -34,7 +77,7 @@ function Chat() {
           overflowY: "auto",
         }}
       >
-        {sampleMessages.map((i) => (
+        {messages.map((i) => (
           <MessageComponent message={i} user={user} key={i._id} />
         ))}
       </Stack>
@@ -43,6 +86,7 @@ function Chat() {
         style={{
           height: "10%",
         }}
+        onSubmit={submitHandler}
       >
         <Stack
           direction={"row"}
@@ -60,7 +104,11 @@ function Chat() {
           >
             <AttachFileIcon />
           </IconButton>
-          <InputBox placeholder="Type Message Here..." />
+          <InputBox
+            placeholder="Type Message Here..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
           <IconButton
             type="submit"
             sx={{
@@ -73,6 +121,9 @@ function Chat() {
                 bgcolor: "error.dark",
               },
             }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           >
             <SendIcon />
           </IconButton>
@@ -81,6 +132,6 @@ function Chat() {
       <FileMenu />
     </Fragment>
   );
-}
+};
 
 export default AppLayout()(Chat);
