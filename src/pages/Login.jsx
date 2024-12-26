@@ -36,7 +36,6 @@ const Login = () => {
 
   const handleLogIn = async (e) => {
     e.preventDefault();
-    console.log("Hi");
 
     const config = {
       withCredentials: true,

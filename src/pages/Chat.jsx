@@ -20,6 +20,7 @@ import { getSocket } from "../socket";
 import { NEW_MESSAGE } from "../constants/events";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../components/hooks/hook";
+import { useInfiniteScrollTop } from "6pp";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
@@ -36,12 +37,20 @@ const Chat = ({ chatId, user }) => {
 
   const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
 
+  const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
+    containerRef,
+    oldMessagesChunk.data?.totalPages,
+    page,
+    setPage,
+    oldMessagesChunk.data?.messages
+  );
+
   const errors = [
     { isError: chatDetails.isError, error: chatDetails.error },
     { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
   ];
 
-  console.log("oldMessagesChunk", oldMessagesChunk.data);
+  console.log("oldMessages", oldMessages);
 
   const members = chatDetails.data?.chat?.members;
 
@@ -54,8 +63,6 @@ const Chat = ({ chatId, user }) => {
     setMessage("");
   };
 
-  console.log("user details", user);
-
   const newMessagesHandler = useCallback((data) => {
     // console.log("Listened Data", data);
     setMessages((prev) => [...prev, data.message]);
@@ -66,6 +73,8 @@ const Chat = ({ chatId, user }) => {
   useSocketEvents(socket, eventHandler);
 
   useErrors(errors);
+
+  const allMessages = [...oldMessages, ...messages];
 
   return chatDetails.isLoading ? (
     <Skeleton />
@@ -83,11 +92,7 @@ const Chat = ({ chatId, user }) => {
           overflowY: "auto",
         }}
       >
-        {!oldMessagesChunk.isLoading &&
-          oldMessagesChunk.data?.messages?.map((i) => (
-            <MessageComponent message={i} user={user} key={i._id} />
-          ))}
-        {messages.map((i) => (
+        {allMessages.map((i) => (
           <MessageComponent message={i} user={user} key={i._id} />
         ))}
       </Stack>
