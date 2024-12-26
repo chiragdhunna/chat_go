@@ -15,11 +15,10 @@ import {
 
 import { InputBox } from "../components/styles/StyledComponents";
 import FileMenu from "../components/dialogs/FileMenu";
-import { sampleMessages } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
 import { getSocket } from "../socket";
 import { NEW_MESSAGE } from "../constants/events";
-import { useChatDetailsQuery } from "../redux/api/api";
+import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../components/hooks/hook";
 
 const Chat = ({ chatId, user }) => {
@@ -27,15 +26,22 @@ const Chat = ({ chatId, user }) => {
 
   const socket = getSocket();
 
-  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
-
   const [message, setMessage] = useState("");
 
   const [messages, setMessages] = useState([]);
 
-  const errors = [{ isError: chatDetails.isError, error: chatDetails.error }];
+  const [page, setPage] = useState(1);
 
-  console.log(messages);
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+
+  const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
+
+  const errors = [
+    { isError: chatDetails.isError, error: chatDetails.error },
+    { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
+  ];
+
+  console.log("oldMessagesChunk", oldMessagesChunk.data);
 
   const members = chatDetails.data?.chat?.members;
 
@@ -77,6 +83,10 @@ const Chat = ({ chatId, user }) => {
           overflowY: "auto",
         }}
       >
+        {!oldMessagesChunk.isLoading &&
+          oldMessagesChunk.data?.messages?.map((i) => (
+            <MessageComponent message={i} user={user} key={i._id} />
+          ))}
         {messages.map((i) => (
           <MessageComponent message={i} user={user} key={i._id} />
         ))}
