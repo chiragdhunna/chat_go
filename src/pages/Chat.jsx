@@ -154,7 +154,7 @@ const Chat = ({ chatId, user }) => {
           </IconButton>
         </Stack>
       </form>
-      <FileMenu anchorEl={fileMenuAnchor} />
+      <FileMenu anchorEl={fileMenuAnchor} chatId={chatId} />
     </Fragment>
   );
 };

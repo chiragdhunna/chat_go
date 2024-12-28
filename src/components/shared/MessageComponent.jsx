@@ -49,7 +49,7 @@ const MessageComponent = ({ message, user }) => {
           );
         })}
 
-      {content && (
+      {(content || attachments.length > 0) && (
         <Typography variant="caption" color={"text.secondary"}>
           {timeAgo}
         </Typography>
