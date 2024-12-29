@@ -17,6 +17,7 @@ import {
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
 } from "../../constants/events";
+import { incrementNotification } from "../../redux/reducers/chat";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -41,7 +42,10 @@ const AppLayout = () => (WrappedComponent) => {
     const handleMobileClose = () => dispatch(setIsMobile(false));
 
     const newMessageAlertHandler = useCallback(() => {}, []);
-    const newRequestHandler = useCallback(() => {}, []);
+
+    const newRequestHandler = useCallback(() => {
+      dispatch(incrementNotification());
+    }, [dispatch]);
 
     const eventHandlers = {
       [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
