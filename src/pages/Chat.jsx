@@ -23,6 +23,7 @@ import { useErrors, useSocketEvents } from "../components/hooks/hook";
 import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from "react-redux";
 import { setIsFileMenu } from "../redux/reducers/misc";
+import { removeNewMessagesAlert } from "../redux/reducers/chat";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
@@ -73,9 +74,9 @@ const Chat = ({ chatId, user }) => {
   };
 
   useEffect(() => {
-    return () => {
-      console.log("use effect called");
+    dispatch(removeNewMessagesAlert(chatId));
 
+    return () => {
       setMessages([]);
       setMessage("");
       setOldMessages([]);
