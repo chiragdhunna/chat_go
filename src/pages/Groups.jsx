@@ -23,10 +23,13 @@ import { bgGradient, mattBlack } from "../constants/color";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
-import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItem from "../components/shared/UserItem";
-import { useChatDetailsQuery, useMyGroupsQuery } from "../redux/api/api";
-import { useErrors } from "../components/hooks/hook";
+import {
+  useChatDetailsQuery,
+  useMyGroupsQuery,
+  useRenameGroupMutation,
+} from "../redux/api/api";
+import { useAsyncMutation, useErrors } from "../components/hooks/hook";
 import { LayoutLoader } from "../components/layout/Loaders";
 
 const ConfirmDeleteDialog = lazy(() =>
@@ -55,6 +58,10 @@ function Groups() {
   const groupDetails = useChatDetailsQuery(
     { chatId, populate: true },
     { skip: !chatId }
+  );
+
+  const [updateGroup, isLoadingGroupName] = useAsyncMutation(
+    useRenameGroupMutation
   );
 
   console.log("groupDetails", groupDetails.data);
@@ -107,7 +114,10 @@ function Groups() {
 
   const updateGroupName = () => {
     setIsEdit(false);
-    console.log(groupNameUpdateValue);
+    updateGroup("Updating Group Name ...", {
+      chatId,
+      name: groupNameUpdateValue,
+    });
   };
 
   useEffect(() => {
@@ -192,14 +202,17 @@ function Groups() {
             value={groupNameUpdateValue}
             onChange={(e) => setGroupNameUpdateValue(e.target.value)}
           />
-          <IconButton onClick={updateGroupName}>
+          <IconButton onClick={updateGroupName} disabled={isLoadingGroupName}>
             <DoneIcon />
           </IconButton>
         </>
       ) : (
         <>
           <Typography variant="h4"> {groupName}</Typography>
-          <IconButton onClick={() => setIsEdit(true)}>
+          <IconButton
+            onClick={() => setIsEdit(true)}
+            disabled={isLoadingGroupName}
+          >
             <EditIcon />
           </IconButton>
         </>

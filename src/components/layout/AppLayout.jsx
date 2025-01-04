@@ -16,6 +16,7 @@ import {
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
+  REFETCH_CHATS,
 } from "../../constants/events";
 import {
   incrementNotification,
@@ -37,7 +38,7 @@ const AppLayout = () => (WrappedComponent) => {
 
     console.log("newMessagesAlert", newMessagesAlert);
 
-    const { isLoading, data, isError, error } = useMyChatsQuery("");
+    const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
     useErrors([{ isError, error }]);
 
@@ -52,7 +53,7 @@ const AppLayout = () => (WrappedComponent) => {
 
     const handleMobileClose = () => dispatch(setIsMobile(false));
 
-    const newMessageAlertHandler = useCallback(
+    const newMessageAlertListener = useCallback(
       (data) => {
         if (data.chatId === chatId) return;
         dispatch(setNewMessageAlert(data));
@@ -60,13 +61,18 @@ const AppLayout = () => (WrappedComponent) => {
       [chatId]
     );
 
-    const newRequestHandler = useCallback(() => {
+    const newRequestListener = useCallback(() => {
       dispatch(incrementNotification());
     }, [dispatch]);
 
+    const refetchListener = useCallback(() => {
+      refetch();
+    }, [refetch]);
+
     const eventHandlers = {
-      [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
-      [NEW_REQUEST]: newRequestHandler,
+      [NEW_MESSAGE_ALERT]: newMessageAlertListener,
+      [NEW_REQUEST]: newRequestListener,
+      [REFETCH_CHATS]: refetchListener,
     };
 
     useSocketEvents(socket, eventHandlers);
