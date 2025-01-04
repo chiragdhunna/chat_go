@@ -25,7 +25,7 @@ import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItem from "../components/shared/UserItem";
-import { useMyGroupsQuery } from "../redux/api/api";
+import { useChatDetailsQuery, useMyGroupsQuery } from "../redux/api/api";
 import { useErrors } from "../components/hooks/hook";
 import { LayoutLoader } from "../components/layout/Loaders";
 
@@ -52,16 +52,43 @@ function Groups() {
 
   const myGroups = useMyGroupsQuery("");
 
-  console.log(myGroups.data);
+  const groupDetails = useChatDetailsQuery(
+    { chatId, populate: true },
+    { skip: !chatId }
+  );
+
+  console.log("groupDetails", groupDetails.data);
+
+  const [members, setMembers] = useState([]);
 
   const errors = [
     {
       isError: myGroups.isError,
       error: myGroups.error,
     },
+    {
+      isError: groupDetails.isError,
+      error: groupDetails.error,
+    },
   ];
 
   useErrors(errors);
+
+  useEffect(() => {
+    const groupData = groupDetails.data;
+    if (groupData) {
+      setGroupName(groupData.chat.name);
+      setGroupNameUpdateValue(groupData.chat.name);
+      setMembers(groupData.chat.members);
+    }
+
+    return () => {
+      setGroupName("");
+      setGroupNameUpdateValue("");
+      setMembers([]);
+      setIsEdit(false);
+    };
+  }, [groupDetails.data]);
 
   const navigateBack = () => {
     navigate("/");
@@ -226,7 +253,7 @@ function Groups() {
         }}
         sm={4}
       >
-        <GroupList myGroups={sampleChats} chatId={chatId} />
+        <GroupList myGroups={myGroups?.data?.groups} chatId={chatId} />
       </Grid>
       <Grid
         item
@@ -265,7 +292,7 @@ function Groups() {
               height={"50vh"}
               overflow={"auto"}
             >
-              {sampleUsers.map((i) => (
+              {members.map((i) => (
                 <UserItem
                   user={i}
                   isAdded
@@ -311,7 +338,11 @@ function Groups() {
         open={isMobileMenuOpen}
         onClose={handleMobileClose}
       >
-        <GroupList w={"50vw"} myGroups={sampleChats} chatId={chatId} />
+        <GroupList
+          w={"50vw"}
+          myGroups={myGroups?.data?.groups}
+          chatId={chatId}
+        />
       </Drawer>
     </Grid>
   );
