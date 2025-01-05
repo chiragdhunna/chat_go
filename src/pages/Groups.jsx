@@ -25,8 +25,10 @@ import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import UserItem from "../components/shared/UserItem";
 import {
+  useAddGroupMemberMutation,
   useChatDetailsQuery,
   useMyGroupsQuery,
+  useRemoveGroupMemberMutation,
   useRenameGroupMutation,
 } from "../redux/api/api";
 import { useAsyncMutation, useErrors } from "../components/hooks/hook";
@@ -62,6 +64,14 @@ function Groups() {
 
   const [updateGroup, isLoadingGroupName] = useAsyncMutation(
     useRenameGroupMutation
+  );
+
+  const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
+    useRemoveGroupMemberMutation
+  );
+
+  const [addMember, isLoadingAddMember] = useAsyncMutation(
+    useAddGroupMemberMutation
   );
 
   console.log("groupDetails", groupDetails.data);
@@ -146,8 +156,10 @@ function Groups() {
     console.log("Member Added");
   };
 
-  const removeMemberHandler = (_id) => {
-    console.log("Member Removed : " + _id);
+  const removeMemberHandler = (userId) => {
+    removeMember("Removing Member ...", { chatId, userId });
+
+    console.log("Member Removed : " + userId);
   };
 
   const IconBtns = (
