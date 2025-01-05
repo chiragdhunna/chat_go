@@ -22,6 +22,7 @@ import { usernameValidator } from "../utils/validator";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleLogin = () => setIsLogin((prev) => !prev);
 
@@ -36,6 +37,8 @@ const Login = () => {
 
   const handleLogIn = async (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Logging In...");
+    setIsLoading(true);
 
     const config = {
       withCredentials: true,
@@ -55,14 +58,20 @@ const Login = () => {
       console.log("data?.user", data);
 
       dispatch(userExists(data?.user));
-      toast.success(data.message);
+      toast.success(data.message, { id: toastId });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Signing Up...");
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("avatar", avatar.file);
@@ -88,9 +97,15 @@ const Login = () => {
       console.log("data?.user", data?.user);
 
       dispatch(userExists(data?.user));
-      toast.success(data.message);
+      toast.success(data.message, {
+        id: toastId,
+      });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went Wrong");
+      toast.error(error?.response?.data?.message || "Something went Wrong", {
+        id: toastId,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -164,13 +179,19 @@ const Login = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
+                  disabled={isLoading}
                 >
                   Login
                 </Button>
                 <Typography textAlign={"center"} m={"1rem"}>
                   OR
                 </Typography>
-                <Button fullWidth variant="text" onClick={toggleLogin}>
+                <Button
+                  fullWidth
+                  variant="text"
+                  onClick={toggleLogin}
+                  disabled={isLoading}
+                >
                   Sign Up Instead
                 </Button>
               </form>
@@ -292,13 +313,19 @@ const Login = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
+                  disabled={isLoading}
                 >
                   Sign Up
                 </Button>
                 <Typography textAlign={"center"} m={"1rem"}>
                   OR
                 </Typography>
-                <Button fullWidth variant="text" onClick={toggleLogin}>
+                <Button
+                  fullWidth
+                  variant="text"
+                  onClick={toggleLogin}
+                  disabled={isLoading}
+                >
                   Login Instead
                 </Button>
               </form>
