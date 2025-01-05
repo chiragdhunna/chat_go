@@ -102,7 +102,7 @@ const ChatManagement = () => {
   return (
     <AdminLayout>
       {loading ? (
-        <Skeleton />
+        <Skeleton height={"100vh"} />
       ) : (
         <Table heading={"All Chats"} columns={columns} rows={rows} />
       )}
