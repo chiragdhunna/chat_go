@@ -55,7 +55,6 @@ const Login = () => {
         },
         config
       );
-      console.log("data?.user", data);
 
       dispatch(userExists(data?.user));
       toast.success(data.message, { id: toastId });
@@ -93,8 +92,6 @@ const Login = () => {
         formData,
         config
       );
-
-      console.log("data?.user", data?.user);
 
       dispatch(userExists(data?.user));
       toast.success(data.message, {

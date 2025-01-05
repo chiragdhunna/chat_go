@@ -97,8 +97,6 @@ const MessageManagement = () => {
 
   const [rows, setRows] = useState([]);
 
-  console.log("data", data);
-
   useEffect(() => {
     if (data) {
       setRows(

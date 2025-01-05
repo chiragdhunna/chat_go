@@ -44,7 +44,9 @@ const Search = () => {
     const timeOutId = setTimeout(() => {
       searchUser(search.value)
         .then(({ data }) => setUsers(data.users))
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          throw new Error(e);
+        });
     }, 1000);
     return () => {
       clearTimeout(timeOutId);

@@ -156,8 +156,6 @@ function Groups() {
 
   const removeMemberHandler = (userId) => {
     removeMember("Removing Member ...", { chatId, userId });
-
-    console.log("Member Removed : " + userId);
   };
 
   const IconBtns = (

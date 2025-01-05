@@ -65,7 +65,6 @@ const Sidebar = ({ w = "100%" }) => {
   const dispatch = useDispatch();
 
   const logoutHandler = () => {
-    console.log("logout");
     dispatch(adminLogout());
   };
 
