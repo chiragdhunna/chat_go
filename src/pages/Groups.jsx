@@ -3,9 +3,11 @@ import {
   Backdrop,
   Box,
   Button,
+  CircularProgress,
   Drawer,
   Grid,
   IconButton,
+  Skeleton,
   Stack,
   TextField,
   Tooltip,
@@ -27,6 +29,7 @@ import UserItem from "../components/shared/UserItem";
 import {
   useAddGroupMemberMutation,
   useChatDetailsQuery,
+  useDeleteChatMutation,
   useMyGroupsQuery,
   useRemoveGroupMemberMutation,
   useRenameGroupMutation,
@@ -74,6 +77,10 @@ function Groups() {
     useRemoveGroupMemberMutation
   );
 
+  const [deleteGroup, isLoadingDeleteGroup] = useAsyncMutation(
+    useDeleteChatMutation
+  );
+
   const errors = [
     {
       isError: myGroups.isError,
@@ -114,8 +121,9 @@ function Groups() {
   const handleMobileClose = () => setIsMobileMenuOpen(false);
 
   const deleteHandler = () => {
-    console.log("Delete Handler");
+    deleteGroup("Deleting Group...", chatId);
     closeConfirmDeleteHandler();
+    navigate("/groups");
   };
 
   const updateGroupName = () => {
@@ -127,11 +135,6 @@ function Groups() {
   };
 
   useEffect(() => {
-    if (chatId) {
-      setGroupName(`Group Name ${chatId}`);
-      setGroupNameUpdateValue(`Group Name ${chatId}`);
-    }
-
     return () => {
       setGroupName("");
       setGroupNameUpdateValue("");
@@ -141,7 +144,6 @@ function Groups() {
 
   const openConfirmDeleteHandler = () => {
     setConfirmDeleteDialog(true);
-    console.log("Delete Group");
   };
 
   const closeConfirmDeleteHandler = () => {
@@ -313,19 +315,23 @@ function Groups() {
               height={"50vh"}
               overflow={"auto"}
             >
-              {members.map((i) => (
-                <UserItem
-                  user={i}
-                  isAdded
-                  styling={{
-                    boxShadow: "0 0 0.5rem rgba(0,0,0,0.2)",
-                    padding: "1rem 2rem",
-                    borderRadius: "1rem",
-                  }}
-                  handler={removeMemberHandler}
-                  key={i._id}
-                />
-              ))}
+              {isLoadingRemoveMember ? (
+                <CircularProgress />
+              ) : (
+                members.map((i) => (
+                  <UserItem
+                    user={i}
+                    isAdded
+                    styling={{
+                      boxShadow: "0 0 0.5rem rgba(0,0,0,0.2)",
+                      padding: "1rem 2rem",
+                      borderRadius: "1rem",
+                    }}
+                    handler={removeMemberHandler}
+                    key={i._id}
+                  />
+                ))
+              )}
             </Stack>
 
             {ButtonGroup}
