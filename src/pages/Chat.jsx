@@ -140,7 +140,7 @@ const Chat = ({ chatId, user }) => {
 
   const newMessagesListener = useCallback(
     (data) => {
-      // if (data.chatId != chatId) return;
+      if (data.chatId != chatId) return;
       setMessages((prev) => [...prev, data.message]);
     },
     [chatId]
