@@ -119,8 +119,8 @@ const Chat = ({ chatId, user }) => {
   }, [messages]);
 
   useEffect(() => {
-    if (!chatDetails.data?.chat) return navigate("/");
-  }, [chatDetails.data]);
+    if (chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError]);
 
   const startTypingListener = useCallback(
     (data) => {
